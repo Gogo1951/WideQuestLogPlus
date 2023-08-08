@@ -3,7 +3,7 @@
 ## Version: 1.0.1
 ## Author: StormtrooperTK421 (clonevince, bloodline_, austenlo_ol, Kudane)
 ## Notes: Dual-pane quest log with quest level and ID
-## X-Curse-Project-ID:
+## X-Curse-Project-ID: 900131
 ## X-WoWI-ID:
 ## X-Wago-ID:
 
