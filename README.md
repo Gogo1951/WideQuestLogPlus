@@ -20,11 +20,12 @@ WideQuestLog Plus combines the functionality of three different quest log addons
 - The addon was forked in 2019 for 1.13.x Classic by [bloodline_](https://legacy.curseforge.com/members/bloodline_/projects)
 - It was then re-uploaded in 2021 for 1.14.1 SoM by [CloneVince](https://legacy.curseforge.com/members/CloneVince/projects)
 - Integrated [Wide Quest Log Levels](https://legacy.curseforge.com/wow/addons/widequestloglevels) by [CloneVince](https://legacy.curseforge.com/members/CloneVince/projects)
-- Borrowed the idea of displaying quest ids from [ShowQuestId](https://www.curseforge.com/wow/addons/showquestid) by [Nalumis](https://legacy.curseforge.com/members/nalumis/projects)
+- Integrated [Wide Quest Log IDs](https://www.curseforge.com/wow/addons/widequestlogids) by [austenlo_ol](https://legacy.curseforge.com/members/austenlo_ol/projects)
 
 <h3>Known Issues / To-Do</h3>
 
 - Enable tracking of greater than 5 quests simultaneously - I've submitted feedback to Blizzard to have this increased in the PTR, but don't know if they have plans to increase the number of simultaneously tracked quests beyond 5. I hope to find a way.
 - Test with ElvUI, Masque, and various other popular UI frameworks
+- Create options commands and/or window to enable/disable the 3 features
 
 Updated, uploaded, and maintained (at least for now) by [StormtrooperTK421](https://discordapp.com/users/237746068844969994) on [GitHub](https://github.com/DustinChecketts/WideQuestLog_Plus). Please submit issues and I'll do my best to troubleshoot, replicate, and resolve issues as my limited abilities allow.
