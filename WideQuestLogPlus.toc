@@ -1,7 +1,7 @@
 ## Interface: 11404
 ## Title: Wide Quest Log Plus
 ## Version: 1.0.1
-## Author: StormtrooperTK421 (original by clonevince)
+## Author: StormtrooperTK421 (clonevince, bloodline_, austenlo_ol, Kudane)
 ## Notes: Dual-pane quest log with quest level and ID
 ## X-Curse-Project-ID:
 ## X-WoWI-ID:
