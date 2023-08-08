@@ -1,5 +1,5 @@
 ## Interface: 11404
-## Title: WideQuestLogPlus
+## Title: Wide Quest Log Plus
 ## Version: 1.0.1
 ## Author: StormtrooperTK421 (original by clonevince)
 ## Notes: Dual-pane quest log with quest level and ID
