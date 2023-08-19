@@ -28,4 +28,4 @@ Wide Quest Log Plus combines the functionality of three different quest log addo
 - Test with ElvUI, Masque, and various other popular UI frameworks
 - Create options commands and/or window to enable/disable the 3 features
 
-Updated, uploaded, and maintained (at least for now) by [StormtrooperTK421](https://discordapp.com/users/237746068844969994) on [GitHub](https://github.com/DustinChecketts/WideQuestLog_Plus). Please submit issues and I'll do my best to troubleshoot, replicate, and resolve issues as my limited abilities allow.
+Updated, uploaded, and maintained (at least for now) by [StormtrooperTK421](https://discordapp.com/users/237746068844969994) on [GitHub](https://github.com/DustinChecketts/WideQuestLogPlus). Please submit issues and I'll do my best to troubleshoot, replicate, and resolve issues as my limited abilities allow.
