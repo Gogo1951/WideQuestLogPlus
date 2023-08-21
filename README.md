@@ -14,7 +14,7 @@ Wide Quest Log Plus combines the functionality of three different quest log addo
 - Ability to shift+click quests to enable quest tracking
 - Previously advertised seamless ElvUI integration [untested]
 
-<h4>Credits</h4>
+<h4>Acknowledgements</h4>
 
 - Originally released in 2008 as [DoubleWide](https://www.wowinterface.com/downloads/info6887-DoubleWide.html) by [Kudane](https://www.wowinterface.com/forums/member.php?u=3)
 - Forked in 2019 for 1.13.x Classic by [bloodline_](https://legacy.curseforge.com/members/bloodline_/projects)
