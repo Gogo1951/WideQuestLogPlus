@@ -10,50 +10,6 @@ UIPanelWindows["QuestLogFrame"] = {
     whileDead = 1
 };
 
--- Function to check if ElvUI is loaded and if the quest skinning is enabled
-function GetElvUI()
-    local elvEnabled = IsAddOnLoaded("ElvUI")
-    local elvSkinningEnabled = false
-    local elv
-
-    if elvEnabled then
-        elv = ElvUI[1]
-        elvSkinningEnabled = elv.private.skins.blizzard.enable == true and elv.private.skins.blizzard.quest == true
-    end
-
-    return elvEnabled, elvSkinningEnabled, elv
-end
-
--- Function to customize the appearance of the Quest Log when ElvUI skinning is enabled
-local function ElvWideQuestLogPlus()
-    local _, elvSkinningEnabled, E = GetElvUI()
-
-    -- Check if ElvUI quest skinning is not enabled, then return
-    if elvSkinningEnabled == false then
-        return
-    end
-
-    local S = E:GetModule('Skins')
-
-    -- Function to load the custom skin for the Quest Log
-    local function LoadSkin()
-        -- Adjust the width of quest log title buttons
-        for i = 1, QUESTS_DISPLAYED do
-            local questLogTitle = _G['QuestLogTitle' .. i]
-            questLogTitle:Width(302)
-        end
-
-        -- Hook a script to customize the appearance of the "No Quests" text
-        QuestLogFrame:HookScript('OnShow', function()
-            QuestLogNoQuestsText:ClearAllPoints()
-            QuestLogNoQuestsText:SetPoint("CENTER", QuestLogFrame)
-        end)
-    end
-
-    -- Register the custom skin loading function with ElvUI's skin module
-    S:AddCallback('Quest', LoadSkin)
-end
-
 -- Function to customize the appearance and behavior of the wide Quest Log
 local function WideQuestLogPlus()
     -- Widen the window
@@ -126,14 +82,6 @@ local function WideQuestLogPlus()
         QuestLogQuestTitle:SetText(title);
     end)
 
-    -- Check if ElvUI quest skinning is enabled
-    local _, elvSkinningEnabled = GetElvUI()
-
-    -- Increase the number of displayed quests with ElvUI skinning
-    if (elvSkinningEnabled) then
-        QUESTS_DISPLAYED = QUESTS_DISPLAYED + 1
-    end
-
     -- Create additional rows for displaying quests
     for i = oldQuestsDisplayed + 1, QUESTS_DISPLAYED do
         local button = CreateFrame("Button", "QuestLogTitle" .. i, QuestLogFrame, "QuestLogTitleButtonTemplate")
@@ -148,12 +96,12 @@ local function WideQuestLogPlus()
     local xOffsets = { Left = 3, Middle = 259, Right = 515 }
     local yOffsets = { Top = 0, Bot = -256 }
     local textures = {
-        TopLeft = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_TopLeft",
-        TopMiddle = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_TopMid",
-        TopRight = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_TopRight",
-        BotLeft = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_BotLeft",
-        BotMiddle = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_BotMid",
-        BotRight = "Interface\\AddOns\\WideQuestLogPlus\\Icons\\DW_BotRight"
+        TopLeft = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_TopLeft",
+        TopMiddle = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_TopMid",
+        TopRight = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_TopRight",
+        BotLeft = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_BotLeft",
+        BotMiddle = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_BotMid",
+        BotRight = "Interface\\AddOns\\WideQuestLogPlus\\img\\WQLP_BotRight"
     }
 
     local PATTERN = "^Interface\\QuestFrame\\UI%-QuestLog%-(([A-Z][a-z]+)([A-Z][a-z]+))$"
@@ -256,4 +204,3 @@ end
 
 -- Call the functions to customize the Quest Log appearance
 WideQuestLogPlus()
-ElvWideQuestLogPlus()
