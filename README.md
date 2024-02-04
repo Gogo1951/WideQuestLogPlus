@@ -12,7 +12,6 @@ Wide Quest Log Plus combines the functionality of three different quest log addo
 - Quest ids added to the quest title in the quest details (right-pane)
 - Ability to shift+click link quests in chat
 - Ability to shift+click quests to enable quest tracking
-- Previously advertised seamless ElvUI integration [untested]
 
 <h4>Acknowledgements</h4>
 
