@@ -1,6 +1,6 @@
 ## Interface: 11502
 ## Title: WideQuestLogPlus
-## Version: 1.0.6
+## Version: 1.0.7
 ## Author: StormtrooperTK421
 ## Notes: Dual-pane quest log with quest level and ID
 ## DefaultState: enabled
