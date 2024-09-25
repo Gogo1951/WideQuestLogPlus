@@ -1,4 +1,4 @@
-## Interface: 11503
+## Interface: 11504
 ## Title: WideQuestLogPlus
 ## Version: 1.0.8
 ## Author: StormtrooperTK421
