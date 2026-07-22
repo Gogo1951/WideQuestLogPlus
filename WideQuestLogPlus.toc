@@ -7,7 +7,7 @@
 ## Category-enUS: Quests & Leveling
 
 ## Version: @project-version@
-## Interface: 20506, 11508
+## Interface: 20506, 11509
 ## X-Curse-Project-ID: 900131
 ## X-License: MIT
 
