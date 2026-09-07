@@ -11,6 +11,8 @@
 ## X-Curse-Project-ID: 900131
 ## X-License: MIT
 
+## SavedVariables: WideQuestLogPlusDB
+
 # WideQeustLogPlus
 WideQuestLogPlus.lua
 
