@@ -6,6 +6,7 @@ Wide Quest Log Plus combines the functionality of three different quest log addo
 <h4>Features</h4>
 
 - A dual-pane quest log that doubles the width of the original quest log
+- Resizable height by dragging the grip in the bottom-right corner, remembered between sessions (`/wqlp reset` restores the default)
 - Full quest list in the left-pane with quest details relocated to the right pane
 - Custom textures added to maintain the look and feel of the original interface
 - Quest levels added to the quest titles in the quest list (left-pane)
