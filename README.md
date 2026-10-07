@@ -18,7 +18,7 @@ Wide, dual-pane quest log with quest levels, dungeon, raid and elite tags, and q
 2. Press your quest log key (L) or click the quest log button on the micro menu.
 3. Drag the grip in the bottom-right corner to make the window as tall as you like.
 4. Type `/wide` to pick how zones and quests are sorted.
-5. _"You're gonna need a bigger quest log."_
+5. _"Your quest log's sorted. Now go find Mankrik's wife."_
 
 ## How It Works
 
