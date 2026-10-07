@@ -15,18 +15,23 @@ local GetClientHeader = ns.GetDiagnosticClientHeader
     there is no Data tab.
 
     note, where a report has one, turns its text into the few words its status
-    row shows. API Endpoints has none on purpose: a [FAIL] on one half of a
-    modern/legacy pair is the report working, so counting them would cry wolf.
+    row shows. Manifests.lua checks only the current client's APIs, so every
+    [FAIL] is a real one and API Endpoints counts them like Event Registration.
 ]]
 local D = ns.DiagnosticsStrings
 
-local function EventsNote(text)
-	local _, failures = string.gsub(text, "%[FAIL%]", "")
-	if failures == 0 then
-		return D.EVENTS_ALL_PASS
+local function FailureNote(allPass, someFail)
+	return function(text)
+		local _, failures = string.gsub(text, "%[FAIL%]", "")
+		if failures == 0 then
+			return allPass
+		end
+		return string.format(someFail, failures)
 	end
-	return string.format(D.EVENTS_SOME_FAIL, failures)
 end
+
+local EventsNote = FailureNote(D.EVENTS_ALL_PASS, D.EVENTS_SOME_FAIL)
+local ApiNote = FailureNote(D.API_ALL_PASS, D.API_SOME_FAIL)
 
 ns.DIAGNOSTIC_REPORTS = {
 	questLog = {
@@ -71,6 +76,7 @@ ns.DIAGNOSTIC_REPORTS = {
 		build = function()
 			return ns:RunApiChecks()
 		end,
+		note = ApiNote,
 	},
 	libs = {
 		title = D.LIBS_TITLE,

@@ -121,6 +121,8 @@ ns.DiagnosticsStrings = {
 	EVENTS_SOME_FAIL = "%d failed to register",
 	API_TITLE = "API Endpoints",
 	API_DESCRIPTION = "Checks that every game function " .. TITLE .. " calls exists on this client.",
+	API_ALL_PASS = "all present",
+	API_SOME_FAIL = "%d missing",
 	QUEST_LOG_CONTEXT_TITLE = "Quest Log Context",
 	QUEST_LOG_CONTEXT_DESCRIPTION = "Shows which quest log loaded, your settings, and the quest add-ons around it.",
 	DISPLAY_TITLE = "Display Context",
@@ -130,7 +132,7 @@ ns.DiagnosticsStrings = {
 	SAVED_TITLE = "Saved Variables",
 	SAVED_DESCRIPTION = "Prints " .. TITLE .. "'s saved settings and lists as readable text.",
 	LIBS_TITLE = "Library Versions",
-	LIBS_DESCRIPTION = "Lists the version of every library " .. TITLE .. " loaded.",
+	LIBS_DESCRIPTION = "Lists the version of every library " .. TITLE .. " bundles, as loaded this session.",
 
 	STATUS_WAITING = "Waiting",
 	STATUS_RUNNING = "Running",

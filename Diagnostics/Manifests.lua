@@ -143,6 +143,27 @@ else
 end
 
 --------------------------------------------------------------------------------
+-- Libraries
+--------------------------------------------------------------------------------
+
+--[[
+	The LibStub libraries the TOC loads from Includes/Libraries. LibStub keeps
+	only the highest minor of each, so the version reported is whichever copy
+	won, ours or a newer one from another add-on.
+]]
+ns.DIAGNOSTIC_LIBRARIES = {
+	"AceConfig-3.0",
+	"AceConfigCmd-3.0",
+	"AceConfigDialog-3.0",
+	"AceConfigRegistry-3.0",
+	"AceDB-3.0",
+	"AceDBOptions-3.0",
+	"AceGUI-3.0",
+	"AceLocale-3.0",
+	"CallbackHandler-1.0",
+}
+
+--------------------------------------------------------------------------------
 -- Data Sources
 --------------------------------------------------------------------------------
 

@@ -13,6 +13,8 @@ function ns:BuildDisplayContextReport()
 	local width, height = GetPhysicalScreenSize()
 	lines[#lines + 1] = string.format("Physical screen size: %s x %s", tostring(width), tostring(height))
 	lines[#lines + 1] = string.format("UIParent scale: %s", tostring(UIParent and UIParent:GetScale()))
+	-- uiScale is ignored while useUiScale is 0; the game then picks the scale itself.
+	lines[#lines + 1] = string.format("useUiScale CVar: %s", tostring(GetCVar("useUiScale")))
 	lines[#lines + 1] = string.format("uiScale CVar: %s", tostring(GetCVar("uiScale")))
 
 	lines[#lines + 1] = ""
@@ -33,7 +35,11 @@ function ns:BuildDisplayContextReport()
 	end
 
 	local saved = ns.db and ns.db.global
-	lines[#lines + 1] = string.format("Saved height: %s", tostring(saved and saved.height))
+	-- The window only takes the saved height when it opens, and the clamp to the screen can shorten it.
+	lines[#lines + 1] = string.format(
+		"Saved height: %s (applied when the quest log opens, limited to the screen)",
+		tostring(saved and saved.height)
+	)
 	local savedPoint = saved and saved.point
 	lines[#lines + 1] = string.format(
 		"Saved position: %s",

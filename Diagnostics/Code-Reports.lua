@@ -57,9 +57,20 @@ end
 
 function ns:RunApiChecks()
 	local lines = { GetClientHeader(), "" }
+	local failures = 0
 	for _, check in ipairs(ns.DIAGNOSTIC_API_CHECKS) do
 		local ok, result = pcall(check[2])
-		lines[#lines + 1] = ((ok and result) and "[PASS] " or "[FAIL] ") .. check[1]
+		local pass = ok and result
+		if not pass then
+			failures = failures + 1
+		end
+		lines[#lines + 1] = (pass and "[PASS] " or "[FAIL] ") .. check[1]
+	end
+	lines[#lines + 1] = ""
+	if failures == 0 then
+		lines[#lines + 1] = "Every API is present on this client."
+	else
+		lines[#lines + 1] = string.format("%d API(s) missing or the wrong type.", failures)
 	end
 	return table.concat(lines, "\n")
 end
@@ -68,15 +79,22 @@ end
 -- Library Versions
 --------------------------------------------------------------------------------
 
+-- Only the libraries the add-on bundles; everything else in LibStub belongs to other add-ons, so it's just counted.
 function ns:BuildLibraryReport()
 	local lines = { GetClientHeader(), "" }
-	local names = {}
+	local bundled = {}
+	for _, name in ipairs(ns.DIAGNOSTIC_LIBRARIES) do
+		bundled[name] = true
+		local minor = LibStub.minors[name]
+		lines[#lines + 1] = string.format("%s (minor %s)", name, minor and tostring(minor) or "NOT LOADED")
+	end
+	local others = 0
 	for name in LibStub:IterateLibraries() do
-		names[#names + 1] = name
+		if not bundled[name] then
+			others = others + 1
+		end
 	end
-	table.sort(names)
-	for _, name in ipairs(names) do
-		lines[#lines + 1] = string.format("%s (minor %s)", name, tostring(LibStub.minors[name]))
-	end
+	lines[#lines + 1] = ""
+	lines[#lines + 1] = string.format("%d other libraries loaded by other add-ons.", others)
 	return table.concat(lines, "\n")
 end
