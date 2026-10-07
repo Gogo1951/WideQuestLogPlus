@@ -1,0 +1,91 @@
+# CI for WideQuestLogPlus, on every pull request and every push to the release
+# branches. Every check runs even when an earlier one fails, so one run shows
+# everything that needs fixing.
+#
+# Started from Gogo1951/Common-Core's ci.yml; it now lives here and no longer
+# calls or checks against Common-Core.
+#
+# Lua is 5.1 throughout because that is the language WoW embeds. Code or tests
+# that only work on 5.2+ (table.unpack, goto, integer division, loadfile with an
+# environment) would pass on a newer interpreter and fail in game.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - forever
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  STYLUA_VERSION: "2.5.2"
+  STYLUA_SHA256: "bcb0d855e91f102f28a370e850f8566b3b44b79e6274d806ea5246837c0fd5ab"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Lua 5.1, luacheck and StyLua
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1 lua-check
+          curl -fsSL -o "$RUNNER_TEMP/stylua.zip" \
+            "https://github.com/JohnnyMorganz/StyLua/releases/download/v${STYLUA_VERSION}/stylua-linux-x86_64.zip"
+          echo "${STYLUA_SHA256}  $RUNNER_TEMP/stylua.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/stylua.zip" -d "$RUNNER_TEMP/bin"
+          chmod +x "$RUNNER_TEMP/bin/stylua"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Line endings are LF
+        if: ${{ !cancelled() }}
+        run: |
+          crlf=$(git ls-files --eol | awk '$1 == "i/crlf" || $1 == "i/mixed" { print $NF }')
+          if [ -n "$crlf" ]; then
+            echo "$crlf" | while read -r f; do echo "::error file=$f::stored with CRLF line endings"; done
+            echo "Fix with: git add --renormalize . && git commit"
+            exit 1
+          fi
+
+      - name: Every vendored library is listed in .pkgmeta
+        if: ${{ !cancelled() && hashFiles('.pkgmeta') != '' }}
+        run: |
+          # The release rebuilds Includes/Libraries/ from .pkgmeta's externals, so a
+          # library missing from that list is never updated, and one listed but not
+          # committed means the repo and the release zip disagree.
+          listed=$(yq e '.externals // {} | keys | .[]' .pkgmeta | sort)
+          present=$(find Includes/Libraries -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+          missing=$(comm -13 <(echo "$listed") <(echo "$present") | sed '/^$/d')
+          extra=$(comm -23 <(echo "$listed") <(echo "$present") | sed '/^$/d')
+          for lib in $missing; do echo "::error file=.pkgmeta::$lib is committed but not in .pkgmeta externals, so releases never update it"; done
+          for lib in $extra; do echo "::error file=.pkgmeta::$lib is in .pkgmeta externals but not committed under Includes/Libraries"; done
+          [ -z "$missing$extra" ]
+
+      - name: Lua 5.1 syntax (luac -p)
+        if: ${{ !cancelled() }}
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            luac5.1 -p -o /dev/null "$file" || status=1
+          done < <(find . -name '*.lua' -not -path './Includes/*' -not -path './.git/*' -print0)
+          exit $status
+
+      - name: luacheck
+        if: ${{ !cancelled() }}
+        run: luacheck . --no-color --codes
+
+      - name: StyLua
+        if: ${{ !cancelled() }}
+        run: stylua --check --syntax lua51 --glob '**/*.lua' --glob '!Includes/**' .
+
+      - name: Offline tests (lua5.1 Tests/Run.lua)
+        if: ${{ !cancelled() && hashFiles('Tests/Run.lua') != '' }}
+        run: lua5.1 Tests/Run.lua

@@ -1,0 +1,95 @@
+# Release workflow for WideQuestLogPlus.
+#
+# A tag push builds the zip and uploads it to CurseForge and Wago. A manual run
+# from the Actions tab is always a dry run: it builds the zip and uploads nothing.
+#
+# Started from Gogo1951/Common-Core's package.yml; it now lives here and no
+# longer calls Common-Core.
+name: Package and release
+
+on:
+  push:
+    tags:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      # The branch releases are built from, and where the vendored-library commit
+      # lands. Tag a commit on this branch.
+      RELEASE_BRANCH: forever
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+      # NEITHER GITHUB_OAUTH NOR GITHUB_API_TOKEN IS SET HERE, AND NEITHER MAY BE
+      # ADDED. release.sh accepts either one, and either is enough to do the damage.
+      #
+      # Given a token, the packager's upload_github() looks the release up by tag
+      # and PATCHes it with "name": the bare tag and "body": a changelog it builds
+      # from the commit messages since the previous tag. That silently replaces
+      # hand-written release notes with developer detail on every build. There is
+      # no flag to suppress only the body; -d would also skip CurseForge and Wago.
+      #
+      # With no token, upload_github() returns at its first guard and never reads,
+      # creates, or edits a release. Release notes written on GitHub are then the
+      # only thing that has ever been there. CurseForge and Wago uploads are
+      # unaffected: they authenticate with the two tokens above. The one trade is
+      # that the packager no longer attaches the zip or release.json to the
+      # GitHub release.
+    steps:
+      - name: Clone project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+          fetch-depth: 0
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
+      - name: Update vendored libraries from .pkgmeta
+        run: |
+          yq e '.externals // {} | to_entries[] | .key + "|" + .value.url' .pkgmeta | while IFS='|' read -r path url; do
+            rm -rf "$path"
+            if [[ "$url" == *"curseforge.com"* ]]; then
+              svn export --force --non-interactive "$url" "$path"
+            else
+              git clone --depth 1 "$url" "$path"
+              rm -rf "$path/.git"
+            fi
+          done
+      - name: Commit libraries and move tag onto the new commit
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        run: |
+          if [ ! -d Includes/Libraries ]; then
+            echo "No vendored libraries; nothing to commit."
+            exit 0
+          fi
+          TAG="${GITHUB_REF_NAME}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Includes/Libraries/
+          if git diff --staged --quiet; then
+            echo "Libraries already up to date; nothing to commit."
+          else
+            git commit -m "Update vendored libraries for ${TAG}"
+            git push origin "HEAD:${RELEASE_BRANCH}"
+            # Fast-forward the release tag onto the commit that has the libraries,
+            # so the packager builds a clean release (HEAD == tag), not an alpha.
+            git tag -f "${TAG}"
+            git push -f origin "refs/tags/${TAG}"
+          fi
+      - name: Link the CurseForge and Wago changelog to the GitHub release
+        run: |
+          # With no manual changelog, the packager writes its commit log into the
+          # zip as CHANGELOG.md. This one sits under .github/, which never ships.
+          echo "[Release Notes]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$GITHUB_REF_NAME)" > .github/CHANGELOG.md
+          printf '\nmanual-changelog:\n  filename: .github/CHANGELOG.md\n  markup-type: markdown\n' >> .pkgmeta
+      - name: Package and release
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: BigWigsMods/packager@e50a250f8705041e40f2fa1ddcb280a686d65aa0 # v2.6.1
+      - name: Package only (dry run, uploads nothing)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: BigWigsMods/packager@e50a250f8705041e40f2fa1ddcb280a686d65aa0 # v2.6.1
+        with:
+          args: -d

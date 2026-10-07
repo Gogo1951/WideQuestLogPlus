@@ -1,0 +1,12 @@
+# Folders
+.claude/
+.idea/
+.release/
+.vscode/
+
+# File Types
+*.zip
+
+# Files
+.DS_Store
+CHANGELOG.md
